@@ -1,8 +1,8 @@
 {
     "displayName"               : "LeTOH",
     "wallpaper"                 : "letoh-ambience.jpg",
-    "highlightColor"            : "#FF9D80",
-    "secondaryHighlightColor"   : "#FF9D8099",
+    "highlightColor"            : "#FF0080",
+    "secondaryHighlightColor"   : "#FF008099",
     "primaryColor"              : "#FFFFFF",
     "secondaryColor"            : "#FFFFFF99",
     "ringerVolume"              : 100,
