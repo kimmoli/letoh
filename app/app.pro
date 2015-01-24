@@ -24,7 +24,6 @@ HEADERS += src/letohclass.h \
 OTHER_FILES += qml/LeTOH.qml \
     qml/cover/CoverPage.qml \
     qml/pages/LeTOH.qml \
-    rpm/harbour-letoh.spec \
 	harbour-letoh.png \
     harbour-letoh.desktop \
     qml/pages/aboutPage.qml
