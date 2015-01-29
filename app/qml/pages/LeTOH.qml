@@ -223,7 +223,7 @@ Page
             TextSwitch
             {
                 id: audioMode
-                text: "Disco Stu"
+                text: "Disco"
                 anchors.horizontalCenter: parent.horizontalCenter
                 description: "Mic level VU meter"
                 onCheckedChanged:
