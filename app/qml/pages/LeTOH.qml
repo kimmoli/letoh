@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2014 Kimmo Lindholm
+  Copyright (C) 2014-2015 Kimmo Lindholm
 
 */
 
@@ -126,7 +126,7 @@ Page
             {
                 text: "About"
                 onClicked: pageStack.push(Qt.resolvedUrl("aboutPage.qml"),
-                                          { "version": letohclass.version, "year": "2014", "name": "LeTOH" } )
+                                          { "version": letohclass.version, "year": "2014-2015", "name": "LeTOH" } )
             }
         }
 
