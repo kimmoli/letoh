@@ -5,5 +5,10 @@
             <arg name="value" type="s" direction="out" />
         </method>
         <method name="quit" />
+        <method name="setLeds">
+            <arg name="value" type="as" direction="in" />
+        </method>
+        <method name="powerOn" />
+        <method name="powerOff" />
     </interface>
 </node>

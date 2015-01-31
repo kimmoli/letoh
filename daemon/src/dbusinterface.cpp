@@ -43,6 +43,8 @@ void DBusInterface::registerDBus()
         m_dbusRegistered = true;
 
         printf("Succesfully registered to dbus systemBus \"%s\"\n", SERVICE);
+
+        showNotification("LeTOH daemon started");
     }
 }
 
@@ -56,7 +58,6 @@ QString DBusInterface::getVersion()
 {
     return m_appVersion;
 }
-
 
 /******** PRIV *********/
 

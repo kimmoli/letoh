@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QtDBus/QtDBus>
+#include <QStringList>
 #include <mlite5/MGConfItem>
 #include <mlite5/MNotification>
 #include <mlite5/MDesktopEntry>
@@ -22,10 +23,15 @@ public:
     void registerDBus();
 
 signals:
+    void requestPower(bool state);
+    void requestLeds(QStringList leds);
 
 public slots:
     QString getVersion();
     void quit();
+    void setLeds(QStringList leds) { emit requestLeds(leds); }
+    void powerOn() { emit requestPower(true); }
+    void powerOff() { emit requestPower(false); }
 
 private:
     bool m_dbusRegistered;

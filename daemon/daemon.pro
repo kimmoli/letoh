@@ -42,7 +42,9 @@ SOURCES += \
     src/dbusinterface.cpp \
     src/adaptor.cpp \
     src/notificationmanager.cpp \
-    src/letoh.cpp
+    src/letoh.cpp \
+    src/driverBase.cpp \
+    src/pca9685.cpp
 
 HEADERS += \
     3rdparty/libiphb/src/libiphb.h \
@@ -53,7 +55,9 @@ HEADERS += \
     src/dbusinterface.h \
     src/adaptor.h \
     src/notificationmanager.h \
-    src/letoh.h
+    src/letoh.h \
+    src/driverBase.h \
+    src/pca9685.h
 
 OTHER_FILES += \
     config/$${TARGET}.conf \

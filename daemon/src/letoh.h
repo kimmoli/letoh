@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDBusMessage>
+#include "pca9685.h"
 
 class Letoh : public QObject
 {
@@ -15,6 +16,19 @@ signals:
 public slots:
     void handleNotify(QString notification);
     void handleNotificationClosed(const QDBusMessage &msg);
+    void powerControl(bool state) { controlVdd(state); }
+    void setLeds(QStringList leds);
+
+private:
+    void initDriverData();
+    void controlVdd(bool state);
+    void setLetohState(bool active);
+    bool getLetohState();
+
+    QVariantMap ledDrivers;
+
+    PCA9685 *driver0;
+    PCA9685 *driver1;
 
 };
 
