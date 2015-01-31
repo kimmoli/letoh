@@ -17,11 +17,13 @@
 #include <QtDBus/QtDBus>
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QSignalMapper>
 
 #include "letohd.h"
 #include "notificationmanager.h"
 #include "adaptor.h"
 #include "dbusinterface.h"
+#include "letoh.h"
 
 int main(int argc, char **argv)
 {
@@ -38,6 +40,13 @@ int main(int argc, char **argv)
     new LetohdAdaptor(&dbif);
 
     dbif.registerDBus();
+
+    Letoh letoh;
+
+    NotificationManager notifications;
+
+    notifications.connect(&notifications, SIGNAL(notify(QString)), &letoh, SLOT(handleNotify(QString)));
+
 
 #if 0
     /* path=/com/nokia/mce/signal; interface=com.nokia.mce.signal; member=sig_call_state_ind */

@@ -102,22 +102,22 @@ uint NotificationManager::Notify(const QString &app_name, uint replaces_id, cons
 
     if (app_name == "messageserver5") /* emails */
     {
-        emit this->emailNotify();
+        emit this->notify(QString("email"));
     }
     else if (app_name == "twitter-notifications-client")  /* Build-in twitter */
     {
-        emit this->twitterNotify();
+        emit this->notify(QString("twitter"));
     }
     else if (app_name == "irssi") /* This is irssi mqtt notification */
     {
-        emit this->irssiNotify();
+        emit this->notify(QString("irssi"));
     }
     else if (app_name == "store-client")
     {
         QString category = hints.value("category", "").toString();
         if (category.startsWith("x-nemo.system-update"))
         {
-            emit this->systemUpdateNotify();
+            emit this->notify(QString("systemupdate"));
         }
     }
     else if (app_name == "commhistoryd")
@@ -125,15 +125,15 @@ uint NotificationManager::Notify(const QString &app_name, uint replaces_id, cons
         QString category = hints.value("category", "").toString();
         if (category == "x-nemo.messaging.im" && summary != "")
         {
-            emit this->imNotify();
+            emit this->notify(QString("im"));
         }
         else if (category == "x-nemo.messaging.sms" && summary != "")
         {
-            emit this->smsNotify();
+            emit this->notify(QString("sms"));
         }
         else if (category == "x-nemo.call.missed" && summary != "")
         {
-            emit this->callMissedNotify();
+            emit this->notify(QString("missedcall"));
         }
 #ifdef NOTIFICATIONDEBUG
         else
@@ -152,7 +152,7 @@ uint NotificationManager::Notify(const QString &app_name, uint replaces_id, cons
         printf("Other notification: summary=%s app_icon=%s body=%s\n", qPrintable(summary), qPrintable(app_icon), qPrintable(body));
         printf("subject=%s data=%s category=%s\n", qPrintable(subject), qPrintable(data), qPrintable(category));
 
-        emit this->otherNotify();
+        emit this->notify(QString("other"));
     }
 #endif
     return 0;

@@ -41,7 +41,8 @@ SOURCES += \
     src/letohd.cpp \
     src/dbusinterface.cpp \
     src/adaptor.cpp \
-    src/notificationmanager.cpp
+    src/notificationmanager.cpp \
+    src/letoh.cpp
 
 HEADERS += \
     3rdparty/libiphb/src/libiphb.h \
@@ -51,7 +52,8 @@ HEADERS += \
     src/letohd.h \
     src/dbusinterface.h \
     src/adaptor.h \
-    src/notificationmanager.h
+    src/notificationmanager.h \
+    src/letoh.h
 
 OTHER_FILES += \
     config/$${TARGET}.conf \
