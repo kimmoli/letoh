@@ -17,6 +17,8 @@ Letoh::Letoh(QObject *parent) :
 void Letoh::handleNotify(QString notification)
 {
     printf("Notification: %s\n", qPrintable(notification));
+
+    showSequence( loadLedSequence(notification) );
 }
 
 void Letoh::handleNotificationClosed(const QDBusMessage &msg)
@@ -110,8 +112,9 @@ bool Letoh::getLetohState()
     return line.at(0) == QChar('1');
 }
 
-void Letoh::setLeds(QStringList leds)
+QStringList Letoh::setLeds(QStringList leds)
 {
+    QStringList tmp;
 
     QStringList ledNames;
     ledNames << "topleft";
@@ -132,8 +135,12 @@ void Letoh::setLeds(QStringList leds)
         QVariantMap t = qvariant_cast<QVariantMap>(ledDrivers[ledName]);
         t["color"] = QColor(leds.at(i));
         ledDrivers[ledName] = QVariant(t);
+        printf("%s ", qPrintable(leds.at(i)));
+        tmp << leds.at(i);
         i = (i + 1) % leds.count();
     }
+
+    printf("\n");
 
 #if 0
     char data[120] = { 0 };
@@ -179,4 +186,109 @@ void Letoh::setLeds(QStringList leds)
     driver0->updateLeds(data,0,60);
     driver1->updateLeds(data,60,60);
 #endif
+
+    return tmp;
+}
+
+QList<QStringList> Letoh::loadLedSequence(QString notification)
+{
+    QFile file("/usr/share/harbour-letoh/ledsequences");
+    QList<QStringList> tmp;
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        printf("failed to open\n");
+        return tmp;
+    }
+
+    QTextStream in(&file);
+    bool found = false;
+
+    while (!in.atEnd())
+    {
+
+        QString line = in.readLine();
+
+        if (line.at(0) == QChar('['))
+        {
+            found = line.contains(notification, Qt::CaseInsensitive);
+        }
+        else if (found)
+        {
+            tmp.append(line.split(QChar(' ')));
+        }
+    }
+    file.close();
+
+    return tmp;
+}
+
+void Letoh::showSequence(QList<QStringList> sequence)
+{
+    QStringList prevLeds = setLeds(QStringList() << "#000000");
+
+    foreach (QStringList step, sequence)
+    {
+        /* Assume following
+         * row starts always with command
+         * delay [time in ms]
+         * set [color,..]
+         * fade [fading duration in ms] [color,..]
+         */
+
+        if (step.at(0).startsWith("delay", Qt::CaseInsensitive))
+        {
+            QThread::msleep(step.at(1).toInt());
+        }
+        else if (step.at(0).startsWith("set", Qt::CaseInsensitive))
+        {
+            step.removeFirst();
+            prevLeds = setLeds(step);
+        }
+        else if (step.at(0).startsWith("fade", Qt::CaseInsensitive))
+        {
+            /* one fade step is 50 ms */
+            int duration = step.at(1).toInt();
+
+            step.removeFirst();
+            step.removeFirst();
+
+            /* expand color array */
+            QStringList target;
+            int n=0;
+            for (int i=0 ; i<10 ; i++)
+            {
+                target << step.at(n);
+                n = (n + 1) % step.count();
+            }
+
+            /*  */
+            int steps = duration/50;
+
+            printf("there are %d steps in %d\n", steps, duration);
+
+            for (int i=0 ; i<steps ; i++)
+            {
+                QThread::msleep(50);
+                QStringList thisStep;
+
+                for (int j=0 ; j<10 ; j++)
+                {
+                    int r0 = QColor(prevLeds.at(j)).red();
+                    int g0 = QColor(prevLeds.at(j)).green();
+                    int b0 = QColor(prevLeds.at(j)).blue();
+                    int r2 = QColor(target.at(j)).red();
+                    int g2 = QColor(target.at(j)).green();
+                    int b2 = QColor(target.at(j)).blue();
+                    int r1 = ((r2-r0)/steps)*i + r0;
+                    int g1 = ((g2-g0)/steps)*i + g0;
+                    int b1 = ((b2-b0)/steps)*i + b0;
+                    QColor thisColor(r1, g1, b1);
+                    thisStep << thisColor.name();
+                }
+                setLeds(thisStep);
+            }
+            prevLeds = setLeds(target);
+        }
+    }
 }

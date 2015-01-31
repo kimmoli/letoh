@@ -24,11 +24,14 @@ dbusconf.files = config/$${TARGET}.conf
 dbusInterface.files = config/com.kimmoli.letohd.xml
 dbusInterface.path = /usr/share/dbus-1/interfaces/
 
+ledseq.files = config/ledsequences
+ledseq.path = /usr/share/harbour-letoh/
+
 DEFINES += "APPVERSION=\\\"$${SPECVERSION}\\\""
 
 message($${DEFINES})
 
-INSTALLS += target systemd udevrule dbusconf dbusInterface
+INSTALLS += target systemd udevrule dbusconf dbusInterface ledseq
 
 INCLUDEPATH += \
     ./3rdparty/libdsme/include/ \
@@ -63,5 +66,6 @@ OTHER_FILES += \
     config/$${TARGET}.conf \
     config/$${TARGET}.service \
     config/95-$${TARGET}.rules \
-    config/com.kimmoli.letohd.xml
+    config/com.kimmoli.letohd.xml \
+    config/ledsequences.txt
 

@@ -1,0 +1,6 @@
+[irssi]
+set #000000 #00ff00 #ffff00
+fade 1000 #800000 #ffffff
+delay 1000
+fade 1000 #ffffff #000080
+set #000000
