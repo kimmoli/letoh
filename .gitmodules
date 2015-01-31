@@ -1,0 +1,9 @@
+[submodule "daemon/3rdparty/libiphb"]
+	path = daemon/3rdparty/libiphb
+	url = https://github.com/nemomobile/libiphb.git
+[submodule "daemon/3rdparty/mce-dev"]
+	path = daemon/3rdparty/mce-dev
+	url = https://github.com/nemomobile/mce-dev.git
+[submodule "daemon/3rdparty/libdsme"]
+	path = daemon/3rdparty/libdsme
+	url = https://github.com/nemomobile/libdsme.git

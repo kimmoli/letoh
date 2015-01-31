@@ -22,6 +22,7 @@ BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5Multimedia)
+BuildRequires:  pkgconfig(libiphb)
 BuildRequires:  desktop-file-utils
 
 Requires: ambienced
@@ -49,7 +50,11 @@ desktop-file-install --delete-original       \
 
 %files
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}
+%attr(755,root,root) %{_bindir}/harbour-letohd
+%config /etc/systemd/system/harbour-letohd.service
+%config /etc/udev/rules.d/95-harbour-letohd.rules
+%config /etc/dbus-1/system.d/harbour-letohd.conf
+%attr(755,root,root) %{_bindir}/harbour-letoh
 %{_datadir}/icons/hicolor/86x86/apps/
 %{_datadir}/applications/
 %{_datadir}/harbour-letoh/
@@ -57,6 +62,31 @@ desktop-file-install --delete-original       \
 %{_datadir}/ambience/%{name}/
 %{_datadir}/ambience/%{name}/images/
 
-%post
+%pre
+# In case of update, stop and disable first
+if [ "$1" = "2" ]; then
+  systemctl stop harbour-letohd.service
+  systemctl disable harbour-letohd.service
+  udevadm control --reload
+fi
 
+%post
+#reload udev rules
+udevadm control --reload
+# if letohd is connected, start daemon now
+if [ -e /sys/devices/platform/toh-core.0/vendor ]; then
+ if grep -q 19276 /sys/devices/platform/toh-core.0/vendor ; then
+  if grep -q 5 /sys/devices/platform/toh-core.0/product ; then
+   systemctl start harbour-letohd.service
+  fi
+ fi
+fi
 %_ambience_post
+
+%preun
+# in case of complete removal, stop and disable
+if [ "$1" = "0" ]; then
+  systemctl stop harbour-letohd.service
+  systemctl disable harbour-letohd.service
+  udevadm control --reload
+fi
