@@ -5,7 +5,7 @@ After=tohd.service
 
 [Service]
 ExecStart=/usr/bin/harbour-letohd
-Restart=always
+Restart=on-failure
 RestartSec=5
 Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/100000/dbus/user_bus_socket XDG_RUNTIME_DIR=/run/user/100000
 

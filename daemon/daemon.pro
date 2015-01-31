@@ -1,11 +1,14 @@
 TARGET = harbour-letohd
 
 CONFIG += console link_pkgconfig
-PKGCONFIG += contextkit-statefs
+PKGCONFIG += contextkit-statefs mlite5
 
 QT += dbus
 
 LIBS += -lrt
+
+# DBus
+system(qdbusxml2cpp config/com.kimmoli.letohd.xml -i src/dbusinterface.h -a src/adaptor)
 
 target.path = /usr/bin/
 
@@ -18,11 +21,14 @@ udevrule.files = config/95-$${TARGET}.rules
 dbusconf.path = /etc/dbus-1/system.d/
 dbusconf.files = config/$${TARGET}.conf
 
+dbusInterface.files = config/com.kimmoli.letohd.xml
+dbusInterface.path = /usr/share/dbus-1/interfaces/
+
 DEFINES += "APPVERSION=\\\"$${SPECVERSION}\\\""
 
 message($${DEFINES})
 
-INSTALLS += target systemd udevrule dbusconf
+INSTALLS += target systemd udevrule dbusconf dbusInterface
 
 INCLUDEPATH += \
     ./3rdparty/libdsme/include/ \
@@ -33,6 +39,8 @@ INCLUDEPATH += \
 SOURCES += \
     3rdparty/libiphb/src/libiphb.c \
     src/letohd.cpp \
+    src/dbusinterface.cpp \
+    src/adaptor.cpp \
     src/notificationmanager.cpp
 
 HEADERS += \
@@ -41,10 +49,13 @@ HEADERS += \
     3rdparty/libdsme/include/dsme/messages.h \
     3rdparty/mce-dev/include/mce/dbus-names.h \
     src/letohd.h \
+    src/dbusinterface.h \
+    src/adaptor.h \
     src/notificationmanager.h
 
 OTHER_FILES += \
     config/$${TARGET}.conf \
     config/$${TARGET}.service \
-    config/95-$${TARGET}.rules
+    config/95-$${TARGET}.rules \
+    config/com.kimmoli.letohd.xml
 

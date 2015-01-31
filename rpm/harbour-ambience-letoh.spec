@@ -10,8 +10,8 @@ Name:       harbour-ambience-letoh
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 
 Summary:    LeTOH Control Application
-Version:    0.7.3
-Release:    3
+Version:    0.8.0
+Release:    devel
 Group:      Qt/Qt
 License:    LICENSE
 URL:        https://github.com/kimmoli/letoh
@@ -23,6 +23,7 @@ BuildRequires:  pkgconfig(Qt5Qml)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(Qt5Multimedia)
 BuildRequires:  pkgconfig(libiphb)
+BuildRequires:  pkgconfig(mlite5)
 BuildRequires:  desktop-file-utils
 
 Requires: ambienced
@@ -50,11 +51,12 @@ desktop-file-install --delete-original       \
 
 %files
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/harbour-letohd
-%config /etc/systemd/system/harbour-letohd.service
-%config /etc/udev/rules.d/95-harbour-letohd.rules
-%config /etc/dbus-1/system.d/harbour-letohd.conf
 %attr(755,root,root) %{_bindir}/harbour-letoh
+%attr(755,root,root) %{_bindir}/harbour-letohd
+%{_sysconfdir}/systemd/system/
+%{_sysconfdir}/udev/rules.d/
+%{_sysconfdir}/dbus-1/system.d/
+%{_datadir}/dbus-1/interfaces/
 %{_datadir}/icons/hicolor/86x86/apps/
 %{_datadir}/applications/
 %{_datadir}/harbour-letoh/
@@ -71,6 +73,8 @@ if [ "$1" = "2" ]; then
 fi
 
 %post
+#reload dbus config
+dbus-send --system --type=method_call --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig
 #reload udev rules
 udevadm control --reload
 # if letohd is connected, start daemon now

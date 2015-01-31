@@ -20,6 +20,8 @@
 
 #include "letohd.h"
 #include "notificationmanager.h"
+#include "adaptor.h"
+#include "dbusinterface.h"
 
 int main(int argc, char **argv)
 {
@@ -32,35 +34,11 @@ int main(int argc, char **argv)
 
     printf("Starting letohd daemon. Version %s.\n", APPVERSION);
 
-    if (!QDBusConnection::systemBus().isConnected())
-    {
-        printf("Cannot connect to the D-Bus systemBus\n%s\n", qPrintable(QDBusConnection::systemBus().lastError().message()));
-        exit(EXIT_FAILURE);
-    }
-    printf("Connected to D-Bus systembus\n");
+    DBusInterface dbif(QString(APPVERSION));
+    new LetohdAdaptor(&dbif);
 
-    printf("Environment %s\n", qPrintable(getenv ("DBUS_SESSION_BUS_ADDRESS")));
+    dbif.registerDBus();
 
-    if (!QDBusConnection::sessionBus().isConnected())
-    {
-        printf("Cannot connect to the D-Bus sessionBus\n%s\n", qPrintable(QDBusConnection::sessionBus().lastError().message()));
-        exit(EXIT_FAILURE);
-    }
-    printf("Connected to D-Bus sessionbus\n");
-
-    if (!QDBusConnection::systemBus().registerService(SERVICE_NAME))
-    {
-        printf("Cannot register service to systemBus\n%s\n", qPrintable(QDBusConnection::systemBus().lastError().message()));
-        exit(EXIT_FAILURE);
-    }
-
-
-    printf("Registered %s to D-Bus systembus\n", SERVICE_NAME);
-
-/*    Toholed toholed;
-
-    QDBusConnection::systemBus().registerObject("/", &toholed, QDBusConnection::ExportAllSlots | QDBusConnection::ExportAllSignals);
-*/
 #if 0
     /* path=/com/nokia/mce/signal; interface=com.nokia.mce.signal; member=sig_call_state_ind */
 
