@@ -1,6 +1,29 @@
+[email]
+set green
+fade 1000 black
+
+[twitter]
+set red blue
+fade 1000 black
+
 [irssi]
-set #000000 #00ff00 #ffff00
-fade 1000 #800000 #ffffff
-delay 1000
-fade 1000 #ffffff #000080
-set #000000
+set red
+fade 1000 black
+
+[systemupdate]
+set blue black
+fade 1000 black red
+fade 1000 black
+
+[im]
+set blue
+fade 1000 black
+
+[sms]
+set blue
+fade 250 red
+fade 1000 black
+
+[missedcall]
+set yellow
+fade 1000 black

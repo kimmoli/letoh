@@ -16,14 +16,13 @@ signals:
 public slots:
     void handleNotify(QString notification);
     void handleNotificationClosed(const QDBusMessage &msg);
-    void powerControl(bool state) { controlVdd(state); }
+    void stateControl(bool state) { setLetohState(state); }
     QStringList setLeds(QStringList leds);
 
 private:
     void initDriverData();
     void controlVdd(bool state);
     void setLetohState(bool active);
-    bool getLetohState();
 
     QList<QStringList> loadLedSequence(QString notification);
     void showSequence(QList<QStringList> sequence);
@@ -32,7 +31,6 @@ private:
 
     PCA9685 *driver0;
     PCA9685 *driver1;
-
 };
 
 #endif // LETOH_H

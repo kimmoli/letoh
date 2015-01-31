@@ -8,7 +8,11 @@
         <method name="setLeds">
             <arg name="value" type="as" direction="in" />
         </method>
-        <method name="powerOn" />
-        <method name="powerOff" />
+        <method name="enable" />
+        <method name="disable" />
+        <method name="test">
+            <arg name="notification" type="s" direction="in" />
+        </method>
+
     </interface>
 </node>

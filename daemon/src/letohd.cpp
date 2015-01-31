@@ -43,8 +43,9 @@ int main(int argc, char **argv)
 
     Letoh letoh;
 
-    dbif.connect(&dbif, SIGNAL(requestPower(bool)), &letoh, SLOT(powerControl(bool)));
+    dbif.connect(&dbif, SIGNAL(requestState(bool)), &letoh, SLOT(stateControl(bool)));
     dbif.connect(&dbif, SIGNAL(requestLeds(QStringList)), &letoh, SLOT(setLeds(QStringList)));
+    dbif.connect(&dbif, SIGNAL(testNotification(QString)), &letoh, SLOT(handleNotify(QString)));
 
     NotificationManager notifications;
 

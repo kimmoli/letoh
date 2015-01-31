@@ -23,15 +23,17 @@ public:
     void registerDBus();
 
 signals:
-    void requestPower(bool state);
+    void requestState(bool state);
     void requestLeds(QStringList leds);
+    void testNotification(QString notification);
 
 public slots:
     QString getVersion();
     void quit();
     void setLeds(QStringList leds) { emit requestLeds(leds); }
-    void powerOn() { emit requestPower(true); }
-    void powerOff() { emit requestPower(false); }
+    void enable() { emit requestState(true); }
+    void disable() { emit requestState(false); }
+    void test(QString notification) { emit testNotification(notification); }
 
 private:
     bool m_dbusRegistered;

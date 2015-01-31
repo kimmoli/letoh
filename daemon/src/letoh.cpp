@@ -77,12 +77,6 @@ void Letoh::controlVdd(bool state)
 
 void Letoh::setLetohState(bool active)
 {
-    if (active == getLetohState())
-    {
-        printf("WTF, state already %s\n", active ? "active" : "inactive");
-        return;
-    }
-
     controlVdd(active);
 
     QThread::msleep(100);
@@ -92,22 +86,6 @@ void Letoh::setLetohState(bool active)
         driver1 = new PCA9685(0x41);
         driver0 = new PCA9685(0x40);
     }
-}
-
-bool Letoh::getLetohState()
-{
-    QString line;
-
-    QFile inputFile( "/sys/devices/platform/reg-userspace-consumer.0/state" );
-
-    if ( inputFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-       QTextStream in( &inputFile );
-       line = in.readLine();
-       inputFile.close();
-    }
-
-    return line.at(0) == QChar('1');
 }
 
 QStringList Letoh::setLeds(QStringList leds)
@@ -225,11 +203,17 @@ void Letoh::showSequence(QList<QStringList> sequence)
 
     foreach (QStringList step, sequence)
     {
-        /* Assume following
+        /* letoh scripting:
+         *
          * row starts always with command
+         * colors are repeated until all leds have color
+         * single given color will be set to all leds
+         * two given colors will be set repeatedly to all leds
+         *
          * delay [time in ms]
          * set [color,..]
          * fade [fading duration in ms] [color,..]
+         * shift [ccw|cw]
          */
 
         if (step.at(0).startsWith("delay", Qt::CaseInsensitive))
@@ -240,6 +224,14 @@ void Letoh::showSequence(QList<QStringList> sequence)
         {
             step.removeFirst();
             prevLeds = setLeds(step);
+        }
+        else if (step.at(0).startsWith("shift", Qt::CaseInsensitive))
+        {
+            if (step.at(1).startsWith("cw", Qt::CaseInsensitive))
+                prevLeds << prevLeds.takeFirst();
+            else
+                prevLeds.insert(0, prevLeds.takeLast());
+            setLeds(prevLeds);
         }
         else if (step.at(0).startsWith("fade", Qt::CaseInsensitive))
         {
