@@ -18,7 +18,11 @@ void Letoh::handleNotify(QString notification)
 {
     printf("Notification: %s\n", qPrintable(notification));
 
+    setLetohState(true);
+
     showSequence( loadLedSequence(notification) );
+
+    setLetohState(false);
 }
 
 void Letoh::handleNotificationClosed(const QDBusMessage &msg)
@@ -55,12 +59,6 @@ void Letoh::initDriverData()
     driver["address"] = 0x41; driver["red"] = 13; driver["green"] = 12; driver["blue"] = 14; driver["color"] = QColor("#000000");
     ledDrivers["topleft"] = QVariant(driver);
 
-#if 0
-    for(QVariantMap::const_iterator iter = ledDrivers.begin(); iter != ledDrivers.end(); ++iter)
-    {
-        qDebug() << iter.key() << " = " << qvariant_cast<QVariantMap>(iter.value())["color"].toString();
-    }
-#endif
 }
 
 void Letoh::controlVdd(bool state)
@@ -142,7 +140,6 @@ QStringList Letoh::setLeds(QStringList leds)
 
     printf("\n");
 
-#if 0
     char data[120] = { 0 };
 
     for(QVariantMap::const_iterator iter = ledDrivers.begin(); iter != ledDrivers.end(); ++iter)
@@ -185,7 +182,6 @@ QStringList Letoh::setLeds(QStringList leds)
 
     driver0->updateLeds(data,0,60);
     driver1->updateLeds(data,60,60);
-#endif
 
     return tmp;
 }
