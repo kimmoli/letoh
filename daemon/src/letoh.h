@@ -12,6 +12,7 @@ public:
     explicit Letoh(QObject *parent = 0);
 
 signals:
+    void notificationHandled(QString notification);
 
 public slots:
     void handleNotify(QString notification);

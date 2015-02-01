@@ -27,3 +27,10 @@ fade 1000 black
 [missedcall]
 set yellow
 fade 1000 black
+
+[ringing]
+fade 300 yellow black
+fade 300 black magenta
+fade 300 green black
+fade 300 black blue
+fade 300 black

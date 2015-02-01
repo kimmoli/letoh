@@ -47,7 +47,8 @@ SOURCES += \
     src/notificationmanager.cpp \
     src/letoh.cpp \
     src/driverBase.cpp \
-    src/pca9685.cpp
+    src/pca9685.cpp \
+    src/callmonitor.cpp
 
 HEADERS += \
     3rdparty/libiphb/src/libiphb.h \
@@ -60,7 +61,8 @@ HEADERS += \
     src/notificationmanager.h \
     src/letoh.h \
     src/driverBase.h \
-    src/pca9685.h
+    src/pca9685.h \
+    src/callmonitor.h
 
 OTHER_FILES += \
     config/$${TARGET}.conf \

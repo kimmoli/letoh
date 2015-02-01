@@ -19,10 +19,10 @@ void Letoh::handleNotify(QString notification)
     printf("Notification: %s\n", qPrintable(notification));
 
     setLetohState(true);
-
     showSequence( loadLedSequence(notification) );
-
     setLetohState(false);
+
+    emit notificationHandled(notification);
 }
 
 void Letoh::handleNotificationClosed(const QDBusMessage &msg)

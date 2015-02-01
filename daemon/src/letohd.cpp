@@ -25,6 +25,7 @@
 #include "adaptor.h"
 #include "dbusinterface.h"
 #include "letoh.h"
+#include "callmonitor.h"
 
 int main(int argc, char **argv)
 {
@@ -42,11 +43,10 @@ int main(int argc, char **argv)
 
     dbif.registerDBus();
 
-    QThread* worker = new QThread();
+    QThread* t_letoh = new QThread();
     Letoh* letoh = new Letoh();
-
-    letoh->moveToThread(worker);
-    worker->start();
+    letoh->moveToThread(t_letoh);
+    t_letoh->start();
 
     dbif.connect(&dbif, SIGNAL(requestState(bool)), letoh, SLOT(stateControl(bool)));
     dbif.connect(&dbif, SIGNAL(requestLeds(QStringList)), letoh, SLOT(setLeds(QStringList)));
@@ -61,6 +61,14 @@ int main(int argc, char **argv)
                                           "org.freedesktop.Notifications",
                                           "NotificationClosed",
                                           letoh, SLOT(handleNotificationClosed(const QDBusMessage&)));
+
+    QThread* t_callmonitor = new QThread();
+    CallMonitor* callmonitor = new CallMonitor();
+    callmonitor->moveToThread(t_callmonitor);
+    t_callmonitor->start();
+
+    QObject::connect(callmonitor, SIGNAL(incomingCall(QString)), letoh, SLOT(handleNotify(QString)));
+    QObject::connect(letoh, SIGNAL(notificationHandled(QString)), callmonitor, SLOT(notificationHandled(QString)));
 
     return app.exec();
 }
