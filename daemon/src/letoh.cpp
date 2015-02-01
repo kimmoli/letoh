@@ -12,7 +12,6 @@ Letoh::Letoh(QObject *parent) :
     QObject(parent)
 {
     initDriverData();
-    printf("letoh initialised.\n");
 }
 
 void Letoh::handleNotify(QString notification)
@@ -112,7 +111,7 @@ QStringList Letoh::setLeds(QStringList leds)
         QVariantMap t = qvariant_cast<QVariantMap>(ledDrivers[ledName]);
         t["color"] = QColor(leds.at(i));
         ledDrivers[ledName] = QVariant(t);
-        printf("%s ", qPrintable(leds.at(i)));
+        // printf("%s ", qPrintable(leds.at(i)));
         tmp << leds.at(i);
         i = (i + 1) % leds.count();
     }
@@ -217,6 +216,11 @@ void Letoh::showSequence(QList<QStringList> sequence)
          * shift [ccw|cw]
          */
 
+        printf("processing ");
+        for (int i=0 ; i<step.count() ; i++)
+            printf("%s ", qPrintable(step.at(i)));
+        printf("\n");
+
         if (step.at(0).startsWith("delay", Qt::CaseInsensitive))
         {
             QThread::msleep(step.at(1).toInt());
@@ -254,7 +258,7 @@ void Letoh::showSequence(QList<QStringList> sequence)
             /*  */
             int steps = duration/50;
 
-            printf("there are %d steps in %d\n", steps, duration);
+            // printf("there are %d steps in %d\n", steps, duration);
 
             for (int i=0 ; i<steps ; i++)
             {

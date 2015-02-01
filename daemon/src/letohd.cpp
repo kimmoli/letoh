@@ -48,15 +48,13 @@ int main(int argc, char **argv)
     letoh->moveToThread(worker);
     worker->start();
 
-    printf("worker start\n");
-
     dbif.connect(&dbif, SIGNAL(requestState(bool)), letoh, SLOT(stateControl(bool)));
     dbif.connect(&dbif, SIGNAL(requestLeds(QStringList)), letoh, SLOT(setLeds(QStringList)));
-    dbif.connect(&dbif, SIGNAL(testNotification(QString)), letoh, SLOT(handleNotify(QString)));
+    dbif.connect(&dbif, SIGNAL(testNotification(QString)), letoh, SLOT(handleNotify(QString)), Qt::QueuedConnection);
 
     NotificationManager notifications;
 
-    notifications.connect(&notifications, SIGNAL(notify(QString)), letoh, SLOT(handleNotify(QString)));
+    notifications.connect(&notifications, SIGNAL(notify(QString)), letoh, SLOT(handleNotify(QString)), Qt::QueuedConnection);
 
     QDBusConnection::sessionBus().connect("org.freedesktop.Notifications",
                                           "/org/freedesktop/Notifications",
