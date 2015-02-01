@@ -12,6 +12,7 @@ Letoh::Letoh(QObject *parent) :
     QObject(parent)
 {
     initDriverData();
+    printf("letoh initialised.\n");
 }
 
 void Letoh::handleNotify(QString notification)

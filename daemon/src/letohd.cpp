@@ -18,6 +18,7 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QSignalMapper>
+#include <QThread>
 
 #include "letohd.h"
 #include "notificationmanager.h"
@@ -41,24 +42,29 @@ int main(int argc, char **argv)
 
     dbif.registerDBus();
 
-    Letoh letoh;
+    QThread* worker = new QThread();
+    Letoh* letoh = new Letoh();
 
-    dbif.connect(&dbif, SIGNAL(requestState(bool)), &letoh, SLOT(stateControl(bool)));
-    dbif.connect(&dbif, SIGNAL(requestLeds(QStringList)), &letoh, SLOT(setLeds(QStringList)));
-    dbif.connect(&dbif, SIGNAL(testNotification(QString)), &letoh, SLOT(handleNotify(QString)));
+    letoh->moveToThread(worker);
+    worker->start();
+
+    printf("worker start\n");
+
+    dbif.connect(&dbif, SIGNAL(requestState(bool)), letoh, SLOT(stateControl(bool)));
+    dbif.connect(&dbif, SIGNAL(requestLeds(QStringList)), letoh, SLOT(setLeds(QStringList)));
+    dbif.connect(&dbif, SIGNAL(testNotification(QString)), letoh, SLOT(handleNotify(QString)));
 
     NotificationManager notifications;
 
-    notifications.connect(&notifications, SIGNAL(notify(QString)), &letoh, SLOT(handleNotify(QString)));
+    notifications.connect(&notifications, SIGNAL(notify(QString)), letoh, SLOT(handleNotify(QString)));
 
     QDBusConnection::sessionBus().connect("org.freedesktop.Notifications",
                                           "/org/freedesktop/Notifications",
                                           "org.freedesktop.Notifications",
                                           "NotificationClosed",
-                                          &letoh, SLOT(handleNotificationClosed(const QDBusMessage&)));
+                                          letoh, SLOT(handleNotificationClosed(const QDBusMessage&)));
 
     return app.exec();
-
 }
 
 
